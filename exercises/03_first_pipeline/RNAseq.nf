@@ -51,12 +51,19 @@ read_pairs_ch = Channel
         .fromFilePairs(params.reads, checkIfExists:true)
 
 // Define the channels for the genome and reference file
-...
+genome_ch = Channel
+      .fromPath(params.genome, checkIfExists:true)
+      // alternatively file(params.genome)
+gtf_ch = Channel
+      .fromPath(params.gtf, checkIfExists:true)
+
+
 
 include { fastqc as fastqc_raw; fastqc as fastqc_trim } from "${launchDir}/../../modules/fastqc" //addParams(OUTPUT: fastqcOutputFolder)
 include { trimmomatic } from "${launchDir}/../../modules/trimmomatic"
 // Import the star indexing and alignment processes from the modules
-...
+include {star_idx; star_alignment} from "${launchDir}/../../modules/star"
+include {multiqc} from "${launchDir}/../../modules/multiqc"
 
 // Running a workflow with the defined processes here.  
 workflow {
@@ -68,9 +75,16 @@ workflow {
   fastqc_trim(trimmomatic.out.trim_fq)
 	
   // Mapping
-  ... 
-  ... 
+  star_idx(genome_ch, gtf_ch)
+  star_alignment(trimmomatic.out.trim_fq, star_idx.out.index, gtf_ch) 
   
   // Multi QC
+  multiqc( fastqc_raw.out.fastqc_out.mix(fastqc_trim.out.fastqc_out).collect())
   
+
+}
+
+workflow.onComplete {
+    println "Pipeline completed at: $workflow.complete"
+    println "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
 }

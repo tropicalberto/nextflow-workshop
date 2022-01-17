@@ -19,3 +19,6 @@ workflow {
     // call the process as a function with channel as its input
     whosfirst(fifo)
 }
+
+// output is shown at random
+// (nextflow didnt take into consideration the sequencial data)

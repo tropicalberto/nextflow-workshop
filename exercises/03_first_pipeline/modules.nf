@@ -29,7 +29,9 @@ read_pairs_ch = Channel
         .fromFilePairs(params.reads, checkIfExists:true)
 
 include { fastqc as fastqc_raw; fastqc as fastqc_trim } from "${launchDir}/../../modules/fastqc" 
+// include it twice and rename as we will use it twice
 include { trimmomatic } from "${launchDir}/../../modules/trimmomatic"
+// incldue process trimmomatics from where we launch the pipeine 
 
 // Running a workflow with the defined processes here.  
 workflow {

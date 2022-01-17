@@ -3,7 +3,6 @@
 // This is needed for activating the new DLS2
 nextflow.enable.dsl=2
 
-
 // General parameters
 params.datadir = "$launchDir/../../data"
 params.outdir = "$launchDir/results"
