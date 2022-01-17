@@ -8,13 +8,14 @@ params.reads = "$launchDir/../../data/*{1,2}.fq.gz"
  */
 
 reads_ch = Channel
-    .fromFilePairs( params.reads )
+    .fromFilePairs( params.reads, checkIfExists:true)
     .view()
     
 process fastqc {
     input:
     tuple val(sample), path(read) 
-    
+    // why val(sample)
+
     script:
     """
     fastqc ${read}

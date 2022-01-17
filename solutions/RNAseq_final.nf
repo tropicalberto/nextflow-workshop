@@ -76,6 +76,11 @@ workflow {
   multiqc((fastqc_raw.out.fastqc_out).mix(fastqc_trim.out.fastqc_out).collect())
 }
 
+workflow star {
+  take:
+  
+}
+
 workflow.onComplete {
     println "Pipeline completed at: $workflow.complete"
     println "Time to complete workflow execution: $workflow.duration"
